@@ -256,16 +256,16 @@ def equivalent_permanence(
     v_adj: float = adj * scc_now
 
     dmg = damage(scc, current_year, release_yr, schedule, delta)
-    ep: float = (v_adj - dmg) / v_adj
+    ep_ratio: float = (v_adj - dmg) / v_adj
     logging.info(
         "Release year: %i, Damage: %f and Adjusted Net Seq. %f, eP: %f",
         release_yr,
         dmg,
         v_adj,
-        ep,
+        ep_ratio,
     )
 
-    return ep
+    return ep_ratio
 
 
 def interpolate_scc(scc: pd.DataFrame, minimum_year: int, max_year: int) -> pd.DataFrame:
