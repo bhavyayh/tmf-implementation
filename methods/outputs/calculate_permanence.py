@@ -244,26 +244,28 @@ def equivalent_permanence(
 
     # TODO: This needs double checking just to be sure it is the right method
     adj = adjusted_net_sequestration(additionality, leakage, schedule, current_year)
-    release_amount = 0
+    release_amount = 0.0
     while adj - release_amount > 0:
         release_yr += 1
-        release_amount += abs(schedule[current_year][release_yr])
+        release_estimate = float(abs(schedule[current_year][release_yr]))
+        release_amount += release_estimate
 
     scc = interpolate_scc(scc, 2005, release_yr)
-    scc_now = scc.at[current_year, "value"]
+    scc_now = float(scc.at[current_year, "value"])
 
-    v_adj = adj * scc_now
+    v_adj: float = adj * scc_now
 
     dmg = damage(scc, current_year, release_yr, schedule, delta)
+    ep: float = (v_adj - dmg) / v_adj
     logging.info(
         "Release year: %i, Damage: %f and Adjusted Net Seq. %f, eP: %f",
         release_yr,
         dmg,
         v_adj,
-        (v_adj - dmg) / v_adj,
+        ep,
     )
 
-    return (v_adj - dmg) / v_adj
+    return ep
 
 
 def interpolate_scc(scc: pd.DataFrame, minimum_year: int, max_year: int) -> pd.DataFrame:
