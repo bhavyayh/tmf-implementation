@@ -1,7 +1,7 @@
 import json
 import argparse
 import logging
-from typing import Literal, NoReturn
+from typing import Literal, NoReturn, cast
 
 import pandas as pd # type: ignore
 import numpy as np # type: ignore
@@ -247,11 +247,11 @@ def equivalent_permanence(
     release_amount = 0.0
     while adj - release_amount > 0:
         release_yr += 1
-        release_estimate = float(abs(schedule[current_year][release_yr]))
-        release_amount += release_estimate
+        schedule_value = cast(float, schedule.at[current_year, release_yr])
+        release_amount += abs(schedule_value)
 
     scc = interpolate_scc(scc, 2005, release_yr)
-    scc_now = float(scc.at[current_year, "value"])
+    scc_now = cast(float, scc.at[current_year, "value"])
 
     v_adj: float = adj * scc_now
 
